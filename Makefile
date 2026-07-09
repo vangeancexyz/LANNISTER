@@ -2,7 +2,7 @@ CC      := gcc
 CFLAGS  := -std=gnu11 -Wall -Wextra -O2 -D_GNU_SOURCE -fPIC
 LDFLAGS := -shared
 
-SRC    := main.c
+SRC    := main.c mem_internal.c
 OBJ    := $(SRC:.c=.o)
 TARGET := lannister.so
 
