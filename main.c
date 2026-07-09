@@ -1,9 +1,5 @@
 #include <stdio.h>
 
-int main()
-{
-
-	printf("Hello\n");
-
-	return 0;
+__attribute__((constructor)) void init() {
+    printf("Hello .so\n");
 }
