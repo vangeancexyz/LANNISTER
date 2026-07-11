@@ -1,8 +1,8 @@
 #!/bin/bash
-PID=$(pidof kcalc)
+PID=$(pidof cstrike_linux64)
 
 if [ -z "$PID" ]; then
-    echo "Error: kcalc is not running."
+    echo "Error: cstrike_linux64 is not running."
     exit 1
 fi
 
