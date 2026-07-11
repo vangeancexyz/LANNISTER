@@ -31,4 +31,12 @@ int mem_get_module(mem_ctx_t *ctx, const char *module_name, mem_module_t *out)
 int mem_read_raw(mem_ctx_t *ctx, uintptr_t address, void *buf, size_t size)
     __attribute__((warn_unused_result));
 
+#define MEM_READ(ctx, addr, type)                                             \
+    ({                                                                        \
+        type _mem_buf;                                                        \
+        int _mem_rc = mem_read_raw((ctx), (addr), &_mem_buf, sizeof(type));   \
+        (void) _mem_rc;                                                       \
+        _mem_buf;                                                             \
+    })
+
 #endif /* MEM_H */
