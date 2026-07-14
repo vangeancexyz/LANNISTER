@@ -4,6 +4,7 @@
 
 #include "mem.h"
 #include "game.h"
+#include "overlay.h"
 
 #define DEBUG 1   // 0 = off, 1 = on
 // https://c-faq.com/cpp/multistmt.html
@@ -15,6 +16,9 @@
 #else
     #define LOG(fmt, ...) do {} while(0)
 #endif
+
+#define SCREEN_WIDTH  1920
+#define SCREEN_HEIGHT 1080
 
 static volatile bool g_running = false;
 
@@ -34,21 +38,33 @@ static void *cheat_thread(void *arg) {
     game_wait_attach(&game, ctx); // blocks until client.so shows up
     LOG("[-] client base=0x%lx", game.client.base);
 
+    overlay_config_t ov_cfg = { 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT };
+    overlay_t *ov = overlay_create(&ov_cfg);
+    if (!ov) { LOG("[+] overlay_create failed"); mem_destroy(ctx); return NULL; }
+    LOG("[-] overlay OK");
+
     while (g_running) {
+        overlay_event_batch_t events = overlay_poll_events(ov);
+        if (events.quit_requested) break; // bug: game also uses SDL, this fires early
+
         vec3_t pos;
         int health;
         uintptr_t addr;
 
         if (game_get_local_player(&game, &pos, &health, &addr)) {
-            LOG("[-] local_player=0x%lx hp=%d pos=(%.1f, %.1f, %.1f)",
-                addr, health, pos.x, pos.y, pos.z);
-        } else {
-            LOG("[+] local_player not found yet");
+            //LOG("[-] local_player=0x%lx hp=%d pos=(%.1f, %.1f, %.1f)",
+                //addr, health, pos.x, pos.y, pos.z);
         }
 
-        sleep(1);
+        overlay_frame_begin(ov);
+        SDL_SetRenderDrawColor(overlay_renderer(ov), 255, 0, 0, 255);
+        SDL_Rect test_box = { 100, 100, 200, 200 };
+        SDL_RenderFillRect(overlay_renderer(ov), &test_box);
+        overlay_frame_end(ov);
+        usleep(5 * 1000);
     }
 
+    overlay_destroy(ov);
     mem_destroy(ctx);
     return NULL;
 }
