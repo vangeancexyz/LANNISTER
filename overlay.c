@@ -110,17 +110,25 @@ SDL_Renderer *overlay_renderer(overlay_t *ov) {
 
 // drains the SDL event queue once per frame -- SDL_PollEvent empties the
 // queue, so this must be the only place in the program reading it
+// overlay_event_batch_t overlay_poll_events(overlay_t *ov) {
+// 	(void)ov;
+// 	overlay_event_batch_t batch;
+// 	batch.count          = 0;
+// 	batch.quit_requested = false;
+//
+// 	SDL_Event event;
+// 	while (batch.count < OVERLAY_MAX_EVENTS && SDL_PollEvent(&event)) {
+// 		if (event.type == SDL_QUIT) batch.quit_requested = true;
+// 		batch.items[batch.count++] = event;
+// 	}
+// 	return batch;
+// }
 overlay_event_batch_t overlay_poll_events(overlay_t *ov) {
 	(void)ov;
 	overlay_event_batch_t batch;
 	batch.count          = 0;
 	batch.quit_requested = false;
 
-	SDL_Event event;
-	while (batch.count < OVERLAY_MAX_EVENTS && SDL_PollEvent(&event)) {
-		if (event.type == SDL_QUIT) batch.quit_requested = true;
-		batch.items[batch.count++] = event;
-	}
 	return batch;
 }
 
