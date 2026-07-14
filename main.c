@@ -45,7 +45,7 @@ static void *cheat_thread(void *arg) {
 
     while (g_running) {
         overlay_event_batch_t events = overlay_poll_events(ov);
-        if (events.quit_requested) break; // bug: game also uses SDL, this fires early
+        // if (events.quit_requested) break; // bug: game also uses SDL, this fires early
 
         vec3_t pos;
         int health;
@@ -57,9 +57,11 @@ static void *cheat_thread(void *arg) {
         }
 
         overlay_frame_begin(ov);
+
         SDL_SetRenderDrawColor(overlay_renderer(ov), 255, 0, 0, 255);
         SDL_Rect test_box = { 100, 100, 200, 200 };
         SDL_RenderFillRect(overlay_renderer(ov), &test_box);
+
         overlay_frame_end(ov);
         usleep(5 * 1000);
     }
