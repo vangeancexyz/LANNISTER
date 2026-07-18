@@ -13,4 +13,7 @@ typedef struct {
 	void **vtable;
 } Interface_t;
 
+// IVModelRender::DrawModelExecute -- 3 args + this (state, info, bone)
+typedef void (*DrawModelExecuteFn)(Interface_t* thisptr, const void* state, const void* pInfo, void* pCustomBoneToWorld);
+
 #endif /* INTERFACES_H */
