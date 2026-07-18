@@ -8,4 +8,9 @@ typedef void (*MsgFn)(const char* pMsg, ...);
 // singleton ptr out. NULL on version mismatch.
 typedef void* (*CreateInterfaceFn)(const char *pName, int *pReturnCode);
 
+// generic vtable-holder view -- vtable[0] is the func ptr array
+typedef struct {
+	void **vtable;
+} Interface_t;
+
 #endif /* INTERFACES_H */

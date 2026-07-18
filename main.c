@@ -21,13 +21,27 @@ void init(void) {
         return;
     }
 
-    CreateInterfaceFn CreateInterface = (CreateInterfaceFn)dlsym(engine, "CreateInterface");
-    if (!CreateInterface) {
-        EngineMsg("[LANNISTER] CreateInterface symbol missing\n");
+    void *matsys = dlopen("materialsystem.so", RTLD_NOLOAD | RTLD_NOW);
+    if (!matsys) {
+        EngineMsg("[LANNISTER] materialsystem.so load failed\n");
+        return;
+    }
+
+    CreateInterfaceFn EngineFactory = (CreateInterfaceFn)dlsym(engine, "CreateInterface");
+    if (!EngineFactory) {
+        EngineMsg("[LANNISTER] CreateInterface missing in engine.so\n");
+        return;
+    }
+
+    CreateInterfaceFn MatSysFactory = (CreateInterfaceFn)dlsym(matsys, "CreateInterface");
+    if (!MatSysFactory) {
+        EngineMsg("[LANNISTER] CreateInterface missing in materialsystem.so\n");
         return;
     }
 
     // NULL = version string wrong for this binary
-    void *g_pModelRender = CreateInterface("VEngineModel016", NULL);
-    EngineMsg("[LANNISTER] VEngineModel016 -> %p\n", g_pModelRender);
+    void *g_pModelRender    = EngineFactory("VEngineModel016",    NULL);
+    void *g_pMaterialSystem = MatSysFactory("VMaterialSystem080", NULL);
+
+    EngineMsg("[LANNISTER] ModelRender: %p | MaterialSystem: %p\n", g_pModelRender, g_pMaterialSystem);
 }
