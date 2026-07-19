@@ -16,4 +16,19 @@ typedef struct {
 // IVModelRender::DrawModelExecute -- 3 args + this (state, info, bone)
 typedef void (*DrawModelExecuteFn)(Interface_t* thisptr, const void* state, const void* pInfo, void* pCustomBoneToWorld);
 
+// IMaterialSystem::FindMaterial
+typedef void* (*FindMaterialFn)(Interface_t* thisptr, const char* pMaterialName, const char* pTextureGroupName, bool complain, const char* pComplainPrefix);
+
+// IMaterial::ColorModulate
+typedef void (*ColorModulateFn)(void* thisptr, float r, float g, float b);
+
+// IMaterial::IncrementReferenceCount
+typedef void (*IncrementRefCountFn)(void* thisptr);
+
+// IVModelRender::ForcedMaterialOverride
+typedef void (*ForcedMaterialOverrideFn)(Interface_t* thisptr, void* pMaterial, int nOverrideType);
+
+// IVEngineClient::GetGameDirectory
+typedef const char* (*GetGameDirectoryFn)(Interface_t* thisptr);
+
 #endif /* INTERFACES_H */
