@@ -85,5 +85,5 @@ void init(void) {
 
     chams_install_hook();
 
-    bhop_probe();
+    bhop_init();
 }
