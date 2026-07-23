@@ -2,9 +2,11 @@ CC      := gcc
 CFLAGS  := -std=gnu11 -Wall -Wextra -O2 -D_GNU_SOURCE -fPIC
 LDFLAGS := -shared -ldl
 
-SRC    := main.c
+SRC    := main.c chams.c bhop.c util.c
 OBJ    := $(SRC:.c=.o)
 TARGET := lannister.so
+
+HEADERS := interfaces.h chams.h bhop.h util.h
 
 .PHONY: all clean
 
@@ -13,7 +15,7 @@ all: $(TARGET)
 $(TARGET): $(OBJ)
 	$(CC) $(CFLAGS) -o $@ $^ $(LDFLAGS)
 
-%.o: %.c
+%.o: %.c $(HEADERS)
 	$(CC) $(CFLAGS) -c -o $@ $<
 
 clean:
