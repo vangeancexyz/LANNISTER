@@ -5,6 +5,7 @@
 #include "bhop.h"
 
 MsgFn EngineMsg = NULL;
+Interface_t *g_pEngineClient = NULL;
 
 __attribute__((constructor))
 void init(void) {
@@ -52,7 +53,7 @@ void init(void) {
         return;
     }
 
-    Interface_t *g_pEngineClient = (Interface_t*)EngineFactory("VEngineClient014", NULL);
+    g_pEngineClient = (Interface_t*)EngineFactory("VEngineClient014", NULL);
     if (!g_pEngineClient) {
         EngineMsg("[LANNISTER] VEngineClient014 not found\n");
         return;

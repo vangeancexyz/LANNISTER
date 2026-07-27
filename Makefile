@@ -1,6 +1,6 @@
 CC      := gcc
 CFLAGS  := -std=gnu11 -Wall -Wextra -O2 -D_GNU_SOURCE -fPIC
-LDFLAGS := -shared -ldl
+LDFLAGS := -shared -ldl -lm
 
 SRC    := main.c chams.c bhop.c util.c
 OBJ    := $(SRC:.c=.o)

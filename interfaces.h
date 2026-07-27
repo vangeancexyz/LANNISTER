@@ -38,4 +38,10 @@ typedef void (*ForcedMaterialOverrideFn)(Interface_t* thisptr, void* pMaterial, 
 #define IDX_GET_GAME_DIRECTORY 35
 typedef const char* (*GetGameDirectoryFn)(Interface_t* thisptr);
 
+#define IDX_SET_VIEW_ANGLES 19
+typedef struct { float pitch, yaw, roll; } QAngle_t;
+typedef void (*SetViewAnglesFn)(Interface_t* thisptr, QAngle_t* va);
+
+extern Interface_t *g_pEngineClient;
+
 #endif /* INTERFACES_H */
