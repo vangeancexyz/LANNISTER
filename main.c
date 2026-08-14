@@ -3,8 +3,10 @@
 #include "interfaces.h"
 #include "chams.h"
 #include "bhop.h"
+#include "menu.h"
 
 MsgFn EngineMsg = NULL;
+Interface_t *g_pEngineClient = NULL;
 
 __attribute__((constructor))
 void init(void) {
@@ -86,4 +88,7 @@ void init(void) {
     chams_install_hook();
 
     bhop_init();
+
+    menu_probe();
+    menu_install_hook();
 }
