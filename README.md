@@ -4,6 +4,10 @@ LANNISTER is a Linux x86_64 internal instrumentation project for Counter-Strike:
 
 The project loads `lannister.so` into the running game process through GDB and `ptrace`. Once resident, the library resolves engine interfaces at runtime and installs hooks directly into the game's existing execution paths.
 
+![LANNISTER Diagram](img/diagram.png)
+
+![LANNISTER Architecture](img/diagram_2.png)
+
 ## Current features
 
 - Runtime interface discovery through `dlopen`, `dlsym` and `CreateInterface`
