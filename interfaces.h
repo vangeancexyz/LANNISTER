@@ -25,17 +25,16 @@ typedef void (*DrawModelExecuteFn)(Interface_t* thisptr, const void* state, cons
 // IMaterialSystem::FindMaterial
 typedef void* (*FindMaterialFn)(Interface_t* thisptr, const char* pMaterialName, const char* pTextureGroupName, bool complain, const char* pComplainPrefix);
 
-// IMaterial::ColorModulate
-typedef void (*ColorModulateFn)(void* thisptr, float r, float g, float b);
-
-// IMaterial::IncrementReferenceCount
+// IMaterial lifecycle and validation
 typedef void (*IncrementRefCountFn)(void* thisptr);
+typedef void (*DecrementRefCountFn)(void* thisptr);
+typedef bool (*IsErrorMaterialFn)(void* thisptr);
 
 // IVModelRender::ForcedMaterialOverride
-typedef void (*ForcedMaterialOverrideFn)(Interface_t* thisptr, void* pMaterial, int nOverrideType);
+typedef void (*ForcedMaterialOverrideFn)(Interface_t* thisptr, void* pMaterial, int nOverrideType, int nOverrides);
 
-// IVEngineClient::GetGameDirectory
-#define IDX_GET_GAME_DIRECTORY 35
-typedef const char* (*GetGameDirectoryFn)(Interface_t* thisptr);
+// IVRenderView global state used for upcoming model draws
+typedef void (*SetBlendFn)(Interface_t* thisptr, float blend);
+typedef void (*SetColorModulationFn)(Interface_t* thisptr, const float* rgb);
 
 #endif /* INTERFACES_H */
