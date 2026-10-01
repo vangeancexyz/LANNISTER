@@ -8,7 +8,7 @@ TARGET := lannister.so
 
 HEADERS := interfaces.h chams.h bhop.h util.h menu.h
 
-.PHONY: all clean
+.PHONY: all clean test-chams
 
 all: $(TARGET)
 
@@ -19,4 +19,8 @@ $(TARGET): $(OBJ)
 	$(CC) $(CFLAGS) -c -o $@ $<
 
 clean:
-	rm -f $(OBJ) $(TARGET)
+	rm -f $(OBJ) $(TARGET) tests/chams_harness
+
+test-chams: tests/chams_harness.c chams.c chams.h interfaces.h
+	$(CC) $(CFLAGS) -o tests/chams_harness tests/chams_harness.c chams.c -ldl -lm
+	./tests/chams_harness
