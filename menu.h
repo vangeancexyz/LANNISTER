@@ -2,6 +2,7 @@
 #define MENU_H
 
 #include <stdint.h>
+#include <stddef.h>
 #include "interfaces.h"
 
 // decompiled sub_FDD70 in vguimatsurface.so: sub_118490(&unk_3044F0, sub_103980, "VGUI_Surface030")
@@ -10,11 +11,7 @@
 // decompiled sub_3884F0 in engine.so: sub_663B60(..., "VEngineVGui002") / "VEngineVGui001", both resolve to the same object.
 #define VENGINE_VGUI_VERSION "VEngineVGui002"
 
-// IEngineVGui::Paint -- idx 15, confirmed two independent ways: (1)
-// vtable position counted from off_8E3D28 in engine.so, (2) the
-// function's own body embeds its qualified name via a VPROF telemetry
-// call ("(%s)%s", "VGUI", "CEngineVGui::Paint") -- not just position,
-// the binary names itself. Highest-confidence index in this project.
+// IEngineVGui::Paint -- idx 15
 #define IDX_PAINT 15
 
 // ISurface (CMatSystemSurface) draw methods -- confirmed via RTTI
@@ -49,11 +46,7 @@ typedef void (*DrawSetTextFontFn)(Interface_t* thisptr, HFont_t font);
 typedef void (*DrawSetTextColorFn)(Interface_t* thisptr, int r, int g, int b, int a);
 typedef void (*DrawSetTextPosFn)(Interface_t* thisptr, int x, int y);
 
-// text is 16-bit units (Valve's own wchar_t convention from the
-// Windows-originated SDK), NOT the platform's native wchar_t (32-bit
-// on Linux). Build the buffer as uint16_t manually, never use L"..."
-// literals or <wchar.h> here.
-typedef void (*DrawPrintTextFn)(Interface_t* thisptr, const uint16_t *text, int textLen, int drawType);
+typedef void (*DrawPrintTextFn)(Interface_t* thisptr, const wchar_t *text, int textLen, int drawType);
 
 extern Interface_t *g_pSurface;
 extern Interface_t *g_pEngineVGui;
