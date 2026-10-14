@@ -1,4 +1,5 @@
 #include "menu.h"
+#include "interfaces.h"
 #include <dlfcn.h>
 #include <sys/mman.h>
 #include <unistd.h>
@@ -54,6 +55,48 @@ static void ensure_menu_font(void) {
 	g_fontReady = true;
 }
 
+/***
+void Hooked_Paint(Interface_t* thisptr, unsigned int mode) {
+	Original_Paint(thisptr, mode);
+
+	if (!g_pSurface) return;
+
+	ensure_menu_font();
+
+	void **surf_vtable = g_pSurface->vtable;
+
+	DrawSetColorFn DrawSetColor = (DrawSetColorFn)surf_vtable[IDX_DRAW_SET_COLOR];
+	DrawFilledRectFn DrawFilledRect = (DrawFilledRectFn)surf_vtable[IDX_DRAW_FILLED_RECT];
+	DrawOutlinedRectFn DrawOutlinedRect = (DrawOutlinedRectFn)surf_vtable[IDX_DRAW_OUTLINED_RECT];
+
+	// hello world
+	int x0 = 100, y0 = 100, x1 = 400, y1 = 300;
+
+	DrawSetColor(g_pSurface, 20, 20, 20, 220); // dark, mostly opaque fill
+	DrawFilledRect(g_pSurface, x0, y0, x1, y1);
+
+	DrawSetColor(g_pSurface, 0, 255, 0, 255); // green border
+	DrawOutlinedRect(g_pSurface, x0, y0, x1, y1);
+
+	DrawSetTextFontFn DrawSetTextFont = (DrawSetTextFontFn)surf_vtable[IDX_DRAW_SET_TEXT_FONT];
+	DrawSetTextColorFn DrawSetTextColor = (DrawSetTextColorFn)surf_vtable[IDX_DRAW_SET_TEXT_COLOR];
+	DrawSetTextPosFn DrawSetTextPos = (DrawSetTextPosFn)surf_vtable[IDX_DRAW_SET_TEXT_POS];
+	DrawPrintTextFn DrawPrintText = (DrawPrintTextFn)surf_vtable[IDX_DRAW_PRINT_TEXT];
+
+	static const char *title_ascii = "LANNISTER";
+	uint16_t title_wide[16];
+	int title_len = 0;
+	for (; title_ascii[title_len] && title_len < 15; title_len++) {
+		title_wide[title_len] = (uint16_t)(unsigned char)title_ascii[title_len];
+	}
+
+	DrawSetTextFont(g_pSurface, g_menuFont);
+	DrawSetTextColor(g_pSurface, 255, 255, 255, 255);
+	DrawSetTextPos(g_pSurface, x0 + 10, y0 + 10);
+	DrawPrintText(g_pSurface, title_wide, title_len, 0);
+}
+***/
+
 void Hooked_Paint(Interface_t* thisptr, unsigned int mode) {
 	Original_Paint(thisptr, mode);
 
@@ -75,22 +118,13 @@ void Hooked_Paint(Interface_t* thisptr, unsigned int mode) {
 	DrawSetColor(g_pSurface, 0, 255, 0, 255); // green border
 	DrawOutlinedRect(g_pSurface, x0, y0, x1, y1);
 
-	// text: font handle is a placeholder (0) -- see menu.h comment,
-	// CreateFont's index isn't confirmed yet. Manually building the
-	// string as uint16_t, NOT using wchar_t/L"..." (Linux wchar_t is
-	// 32-bit, the engine's own convention from its Windows-originated
-	// SDK is 16-bit).
 	DrawSetTextFontFn DrawSetTextFont = (DrawSetTextFontFn)surf_vtable[IDX_DRAW_SET_TEXT_FONT];
 	DrawSetTextColorFn DrawSetTextColor = (DrawSetTextColorFn)surf_vtable[IDX_DRAW_SET_TEXT_COLOR];
 	DrawSetTextPosFn DrawSetTextPos = (DrawSetTextPosFn)surf_vtable[IDX_DRAW_SET_TEXT_POS];
 	DrawPrintTextFn DrawPrintText = (DrawPrintTextFn)surf_vtable[IDX_DRAW_PRINT_TEXT];
 
-	static const char *title_ascii = "LANNISTER";
-	uint16_t title_wide[16];
-	int title_len = 0;
-	for (; title_ascii[title_len] && title_len < 15; title_len++) {
-		title_wide[title_len] = (uint16_t)(unsigned char)title_ascii[title_len];
-	}
+	static const wchar_t *title_wide = L"LANNISTER";
+	int title_len = 9;
 
 	DrawSetTextFont(g_pSurface, g_menuFont);
 	DrawSetTextColor(g_pSurface, 255, 255, 255, 255);
@@ -99,7 +133,6 @@ void Hooked_Paint(Interface_t* thisptr, unsigned int mode) {
 }
 
 void menu_install_hook(void) {
-	// own engine.so handle, resolved independently
 	void *engine_lib = dlopen("engine.so", RTLD_NOLOAD | RTLD_NOW);
 	if (!engine_lib) {
 		EngineMsg("[LANNISTER] menu: engine.so load failed\n");
